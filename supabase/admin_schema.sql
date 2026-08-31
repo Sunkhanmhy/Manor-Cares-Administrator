@@ -874,22 +874,17 @@ begin
   on conflict do nothing;
 end $$;
 
--- =====================================================================
--- Bootstrap the FIRST Super Admin
--- Run this manually, once, after an account has signed up normally through
--- this admin app's flow (or through Supabase Auth directly) — replace the
--- email below. This is the ONLY step that requires editing this file.
--- =====================================================================
--- do $$
--- declare
---   target_profile_id bigint;
---   super_admin_role_id bigint := (select id from public.roles where key = 'super_admin');
--- begin
---   select id into target_profile_id from public.profiles where email = 'owner@manor-cares.com';
---   update public.profiles set role = 'admin' where id = target_profile_id;
---   insert into public.admin_profiles (profile_id, department, job_title, status)
---     values (target_profile_id, 'Executive', 'Super Admin', 'active')
---     on conflict (profile_id) do nothing;
---   insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
---     on conflict do nothing;
--- end $$;
+
+do $$
+declare
+    target_profile_id bigint;
+    super_admin_role_id bigint := (select id from public.roles where key = 'super_admin');
+begin
+    select id into target_profile_id from public.profiles where email = 'sunkanmhy@icloud.com';
+    update public.profiles set role = 'admin' where id = target_profile_id;
+    insert into public.admin_profiles (profile_id, department, job_title, status)
+    values (target_profile_id, 'Executive', 'Super Admin', 'active')
+    on conflict (profile_id) do nothing;
+    insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
+    on conflict do nothing;
+end $$;
