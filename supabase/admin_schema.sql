@@ -880,7 +880,7 @@ declare
     target_profile_id bigint;
     super_admin_role_id bigint := (select id from public.roles where key = 'super_admin');
 begin
-    select id into target_profile_id from public.profiles where email = 'sunkanmhy@icloud.com';
+    select id into target_profile_id from public.profiles where email = 'support.manorcares@gmail.com';
     update public.profiles set role = 'admin' where id = target_profile_id;
     insert into public.admin_profiles (profile_id, department, job_title, status)
     values (target_profile_id, 'Executive', 'Super Admin', 'active')
