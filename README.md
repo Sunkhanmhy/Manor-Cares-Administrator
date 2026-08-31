@@ -63,6 +63,8 @@ src/types/database.ts                 # TypeScript types mirroring both schema.s
    > `admin_schema.sql` again immediately after — it re-applies the tightened policies and the
    > `handle_new_user()` override, since whichever script runs last wins.
 
+
+
 3. **Bootstrap the first Super Admin.** Sign up any account through Supabase Auth (e.g. via the
    Supabase dashboard, or temporarily via `supabase.auth.signUp` in a scratch script), then run the
    commented-out `do $$ ... $$` block at the bottom of `admin_schema.sql` with that person's email.
