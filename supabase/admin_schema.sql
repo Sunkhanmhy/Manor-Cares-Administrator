@@ -465,6 +465,108 @@ revoke execute on function public.current_admin_is_super_admin() from public, an
 grant execute on function public.current_admin_has_permission(text) to authenticated;
 grant execute on function public.current_admin_is_super_admin() to authenticated;
 
+-- Overrides trg_protect_profiles_update (originally defined in manor-cares-users/schema.sql).
+-- The original raised "unauthenticated" on ANY update where auth.uid() is null — but a direct
+-- SQL editor / service_role / migration session has no PostgREST JWT context at all, so that
+-- unconditionally blocked legitimate bootstrap operations like promote_to_super_admin() below
+-- from ever setting profiles.role, which is what caused newly-created Super Admin accounts to
+-- stay stuck as 'customer'. PostgREST always sets the request.jwt.claims GUC (even for anon
+-- requests), so a session with neither a uid NOR that GUC set can only be a trusted direct DB
+-- connection — trust it. Anything arriving through the API (anon/authenticated) is unaffected.
+create or replace function public.trg_protect_profiles_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_is_admin boolean;
+  v_uid uuid := (select auth.uid());
+begin
+  select private.is_admin() into v_is_admin;
+  if v_is_admin then
+    return new;
+  end if;
+
+  if v_uid is null then
+    if current_setting('request.jwt.claims', true) is null then
+      return new;
+    end if;
+    raise exception 'unauthenticated';
+  end if;
+
+  if old.user_id is null or old.id is null then
+    raise exception 'invalid profile row';
+  end if;
+
+  if not (old.user_id = v_uid) then
+    raise exception 'permission denied: not profile owner';
+  end if;
+
+  if coalesce(new.role, '') <> coalesce(old.role, '') then
+    raise exception 'permission denied: role is immutable';
+  end if;
+
+  if new.user_id is distinct from old.user_id then
+    raise exception 'permission denied: user_id is immutable';
+  end if;
+
+  if coalesce(new.email, '') <> coalesce(old.email, '') then
+    raise exception 'permission denied: email must be changed via Auth';
+  end if;
+
+  if coalesce(new.status, '') <> coalesce(old.status, '') then
+    raise exception 'permission denied: status is admin-only';
+  end if;
+
+  return new;
+end;
+$$;
+
+-- Promotes an existing profile (matched by email, case/whitespace-insensitive since Supabase
+-- Auth/Postgres treat email case differently depending on how the account was created — e.g.
+-- via the Supabase Dashboard vs. the app's own sign-up) to Super Admin. Never throws: returns
+-- false (with a notice) if no matching profile exists yet, so it's always safe to call/re-run.
+-- Not exposed to PostgREST/the browser — only ever run manually from the SQL editor.
+create or replace function public.promote_to_super_admin(target_email text)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  target_profile_id bigint;
+  super_admin_role_id bigint;
+begin
+  select id into target_profile_id
+  from public.profiles
+  where lower(trim(email)) = lower(trim(target_email));
+
+  if target_profile_id is null then
+    raise notice 'promote_to_super_admin: no profile found for % — sign up/create that account in Supabase Auth first.', target_email;
+    return false;
+  end if;
+
+  select id into super_admin_role_id from public.roles where key = 'super_admin';
+  if super_admin_role_id is null then
+    raise exception 'promote_to_super_admin: super_admin role is not seeded yet — run the rest of admin_schema.sql first.';
+  end if;
+
+  update public.profiles set role = 'admin' where id = target_profile_id;
+
+  insert into public.admin_profiles (profile_id, department, job_title, status)
+  values (target_profile_id, 'Executive', 'Super Admin', 'active')
+  on conflict (profile_id) do update set status = 'active';
+
+  insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
+  on conflict do nothing;
+
+  return true;
+end;
+$$;
+
+revoke execute on function public.promote_to_super_admin(text) from public, anon, authenticated;
+
 -- =====================================================================
 -- Redefine handle_new_user (originally created in manor-cares-users'
 -- schema.sql) so that accounts created by the Admin Create Account edge
@@ -875,30 +977,8 @@ begin
 end $$;
 
 
--- Bootstraps the first Super Admin for support.manorcares@gmail.com if (and only if) that
--- account already exists in auth.users/profiles. Guarded with a null check so that running
--- this script BEFORE that account signs up never throws a not-null-constraint error — an
--- unguarded insert here used to abort this entire script (rolling back every table/policy/seed
--- above it, since the SQL editor runs a pasted script as one transaction), which is what caused
--- "Super Admin Auth login error": admin_profiles/user_roles/roles/permissions never actually
--- got created. Re-run this file any time after the account exists to (re)promote it.
-do $$
-declare
-    target_profile_id bigint;
-    super_admin_role_id bigint := (select id from public.roles where key = 'super_admin');
-begin
-    select id into target_profile_id from public.profiles where email = 'support.manorcares@gmail.com';
-
-    if target_profile_id is null then
-      raise notice 'Super Admin bootstrap skipped: no profile found for support.manorcares@gmail.com yet. Sign up that account via Supabase Auth first, then re-run this script (or this DO block) to promote it.';
-    else
-      update public.profiles set role = 'admin' where id = target_profile_id;
-
-      insert into public.admin_profiles (profile_id, department, job_title, status)
-      values (target_profile_id, 'Executive', 'Super Admin', 'active')
-      on conflict (profile_id) do update set status = 'active';
-
-      insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
-      on conflict do nothing;
-    end if;
-end $$;
+-- Bootstraps the first Super Admin via the reusable, case-insensitive promote_to_super_admin()
+-- above. Safe to re-run any time (before or after the account exists, and after every re-run
+-- of this file). If your Super Admin uses a different email, change it here (or just call
+-- `select public.promote_to_super_admin('you@example.com');` directly in the SQL editor).
+select public.promote_to_super_admin('support.manorcares@gmail.com');

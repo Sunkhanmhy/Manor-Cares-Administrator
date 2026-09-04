@@ -1,32 +1,47 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './lib/toast';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PermissionRoute, RequirePermission } from './components/PermissionRoute';
+import { FullPageSpinner } from './components/Spinner';
 import { AdminLoginPage } from './pages/auth/AdminLoginPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 import { DashboardLayout } from './pages/dashboard/DashboardLayout';
 import { DashboardRouter } from './pages/dashboard/DashboardRouter';
-import { CustomersPage } from './pages/dashboard/CustomersPage';
-import { CustomerDetailPage } from './pages/dashboard/CustomerDetailPage';
-import { BookingsPage } from './pages/dashboard/BookingsPage';
-import { ServicesPage } from './pages/dashboard/ServicesPage';
-import { TransportationPage } from './pages/dashboard/TransportationPage';
-import { HRPage } from './pages/dashboard/HRPage';
-import { FinancePage } from './pages/dashboard/FinancePage';
-import { PaymentsPage } from './pages/dashboard/PaymentsPage';
-import { InvoicesPage } from './pages/dashboard/InvoicesPage';
-import { SalesPage } from './pages/dashboard/SalesPage';
-import { MarketingPage } from './pages/dashboard/MarketingPage';
-import { SupportHubPage } from './pages/dashboard/SupportHubPage';
-import { ReviewsPage } from './pages/dashboard/ReviewsPage';
-import { TechnicalPage } from './pages/dashboard/TechnicalPage';
-import { ReportsPage } from './pages/dashboard/ReportsPage';
-import { NotificationsPage } from './pages/dashboard/NotificationsPage';
-import { AdminManagementPage } from './pages/dashboard/AdminManagementPage';
-import { AuditLogPage } from './pages/dashboard/AuditLogPage';
-import { SettingsPage } from './pages/dashboard/SettingsPage';
+
+// Route-level code splitting: every dashboard module is its own chunk, only fetched the
+// first time an admin actually navigates to it, instead of one 500kB+ upfront bundle.
+const CustomersPage = lazy(() => import('./pages/dashboard/CustomersPage').then((m) => ({ default: m.CustomersPage })));
+const CustomerDetailPage = lazy(() =>
+  import('./pages/dashboard/CustomerDetailPage').then((m) => ({ default: m.CustomerDetailPage }))
+);
+const BookingsPage = lazy(() => import('./pages/dashboard/BookingsPage').then((m) => ({ default: m.BookingsPage })));
+const ServicesPage = lazy(() => import('./pages/dashboard/ServicesPage').then((m) => ({ default: m.ServicesPage })));
+const TransportationPage = lazy(() =>
+  import('./pages/dashboard/TransportationPage').then((m) => ({ default: m.TransportationPage }))
+);
+const HRPage = lazy(() => import('./pages/dashboard/HRPage').then((m) => ({ default: m.HRPage })));
+const FinancePage = lazy(() => import('./pages/dashboard/FinancePage').then((m) => ({ default: m.FinancePage })));
+const PaymentsPage = lazy(() => import('./pages/dashboard/PaymentsPage').then((m) => ({ default: m.PaymentsPage })));
+const InvoicesPage = lazy(() => import('./pages/dashboard/InvoicesPage').then((m) => ({ default: m.InvoicesPage })));
+const SalesPage = lazy(() => import('./pages/dashboard/SalesPage').then((m) => ({ default: m.SalesPage })));
+const MarketingPage = lazy(() => import('./pages/dashboard/MarketingPage').then((m) => ({ default: m.MarketingPage })));
+const SupportHubPage = lazy(() =>
+  import('./pages/dashboard/SupportHubPage').then((m) => ({ default: m.SupportHubPage }))
+);
+const ReviewsPage = lazy(() => import('./pages/dashboard/ReviewsPage').then((m) => ({ default: m.ReviewsPage })));
+const TechnicalPage = lazy(() => import('./pages/dashboard/TechnicalPage').then((m) => ({ default: m.TechnicalPage })));
+const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage').then((m) => ({ default: m.ReportsPage })));
+const NotificationsPage = lazy(() =>
+  import('./pages/dashboard/NotificationsPage').then((m) => ({ default: m.NotificationsPage }))
+);
+const AdminManagementPage = lazy(() =>
+  import('./pages/dashboard/AdminManagementPage').then((m) => ({ default: m.AdminManagementPage }))
+);
+const AuditLogPage = lazy(() => import('./pages/dashboard/AuditLogPage').then((m) => ({ default: m.AuditLogPage })));
+const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 function App() {
   return (
@@ -46,7 +61,9 @@ function App() {
                   path="customers"
                   element={
                     <PermissionRoute permission="customers.view">
-                      <CustomersPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <CustomersPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -54,7 +71,9 @@ function App() {
                   path="customers/:id"
                   element={
                     <PermissionRoute permission="customers.view">
-                      <CustomerDetailPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <CustomerDetailPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -62,7 +81,9 @@ function App() {
                   path="bookings"
                   element={
                     <PermissionRoute permission="bookings.view">
-                      <BookingsPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <BookingsPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -70,7 +91,9 @@ function App() {
                   path="services"
                   element={
                     <PermissionRoute permission="sales.view">
-                      <ServicesPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <ServicesPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -78,7 +101,9 @@ function App() {
                   path="transportation"
                   element={
                     <PermissionRoute permission="transportation.view">
-                      <TransportationPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <TransportationPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -86,7 +111,9 @@ function App() {
                   path="hr"
                   element={
                     <PermissionRoute permission="staff.view">
-                      <HRPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <HRPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -94,7 +121,9 @@ function App() {
                   path="finance"
                   element={
                     <PermissionRoute permission="finance.view">
-                      <FinancePage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <FinancePage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -102,7 +131,9 @@ function App() {
                   path="payments"
                   element={
                     <PermissionRoute permission="finance.view">
-                      <PaymentsPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <PaymentsPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -110,7 +141,9 @@ function App() {
                   path="invoices"
                   element={
                     <PermissionRoute permission="finance.view">
-                      <InvoicesPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <InvoicesPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -118,7 +151,9 @@ function App() {
                   path="sales"
                   element={
                     <PermissionRoute permission="sales.view">
-                      <SalesPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <SalesPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -126,7 +161,9 @@ function App() {
                   path="marketing"
                   element={
                     <PermissionRoute permission="marketing.view">
-                      <MarketingPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <MarketingPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -134,7 +171,9 @@ function App() {
                   path="support-hub"
                   element={
                     <PermissionRoute permission="support.view">
-                      <SupportHubPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <SupportHubPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -142,7 +181,9 @@ function App() {
                   path="reviews"
                   element={
                     <PermissionRoute permission="customers.view">
-                      <ReviewsPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <ReviewsPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -150,7 +191,9 @@ function App() {
                   path="technical"
                   element={
                     <PermissionRoute permission="technical.view">
-                      <TechnicalPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <TechnicalPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
@@ -158,16 +201,27 @@ function App() {
                   path="reports"
                   element={
                     <PermissionRoute permission="reports.view">
-                      <ReportsPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <ReportsPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
-                <Route path="notifications" element={<NotificationsPage />} />
+                <Route
+                  path="notifications"
+                  element={
+                    <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                      <NotificationsPage />
+                    </Suspense>
+                  }
+                />
                 <Route
                   path="admins"
                   element={
                     <RequirePermission permission="admins.manage">
-                      <AdminManagementPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <AdminManagementPage />
+                      </Suspense>
                     </RequirePermission>
                   }
                 />
@@ -175,11 +229,20 @@ function App() {
                   path="audit-log"
                   element={
                     <PermissionRoute permission="audit.view">
-                      <AuditLogPage />
+                      <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                        <AuditLogPage />
+                      </Suspense>
                     </PermissionRoute>
                   }
                 />
-                <Route path="settings" element={<SettingsPage />} />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense fallback={<FullPageSpinner label="Loading…" />}>
+                      <SettingsPage />
+                    </Suspense>
+                  }
+                />
               </Route>
             </Route>
           </Routes>
