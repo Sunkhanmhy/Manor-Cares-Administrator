@@ -481,10 +481,11 @@ set search_path = ''
 as $$
 declare
   v_is_admin boolean;
+  v_can_manage_customers boolean;
   v_uid uuid := (select auth.uid());
 begin
   select private.is_admin() into v_is_admin;
-  if v_is_admin then
+  if v_is_admin or private.is_super_admin() then
     return new;
   end if;
 
@@ -493,6 +494,23 @@ begin
       return new;
     end if;
     raise exception 'unauthenticated';
+  end if;
+
+  -- Department admin with customers.manage may edit/suspend/activate ANY customer profile
+  -- (matches the profiles_update RLS policy + what that permission is documented to do) — but
+  -- role/user_id/email stay super-admin-only, so a support agent still can't self-escalate.
+  select private.has_permission('customers.manage') into v_can_manage_customers;
+  if v_can_manage_customers then
+    if coalesce(new.role, '') <> coalesce(old.role, '') then
+      raise exception 'permission denied: role is super-admin-only';
+    end if;
+    if new.user_id is distinct from old.user_id then
+      raise exception 'permission denied: user_id is immutable';
+    end if;
+    if coalesce(new.email, '') <> coalesce(old.email, '') then
+      raise exception 'permission denied: email must be changed via Auth';
+    end if;
+    return new;
   end if;
 
   if old.user_id is null or old.id is null then
@@ -517,6 +535,63 @@ begin
 
   if coalesce(new.status, '') <> coalesce(old.status, '') then
     raise exception 'permission denied: status is admin-only';
+  end if;
+
+  return new;
+end;
+$$;
+
+-- Overrides trg_protect_bookings_update (originally defined in manor-cares-users/schema.sql).
+-- Same gap as trg_protect_profiles_update above: it only ever recognized profiles.role='admin'
+-- or the booking's own customer, so a department admin with bookings.manage (profiles.role is
+-- always 'staff', never 'admin') was silently blocked from confirming/assigning/rescheduling/
+-- cancelling/completing bookings — exactly what that permission is supposed to let them do, and
+-- exactly what the bookings_update RLS policy already allows.
+create or replace function public.trg_protect_bookings_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_is_admin boolean;
+  v_cust bigint;
+begin
+  select private.is_admin() into v_is_admin;
+  if v_is_admin or private.is_super_admin() or private.has_permission('bookings.manage') then
+    return new;
+  end if;
+
+  if (select auth.uid()) is null and current_setting('request.jwt.claims', true) is null then
+    return new;
+  end if;
+
+  select private.current_customer_id() into v_cust;
+  if v_cust is null then
+    raise exception 'permission denied: not a customer';
+  end if;
+
+  if old.customer_id is distinct from v_cust then
+    raise exception 'permission denied: not owner of booking';
+  end if;
+
+  if new.estimated_price is distinct from old.estimated_price then
+    raise exception 'permission denied: cannot change estimated_price';
+  end if;
+  if new.final_price is distinct from old.final_price then
+    raise exception 'permission denied: cannot change final_price';
+  end if;
+  if new.payment_status is distinct from old.payment_status then
+    raise exception 'permission denied: cannot change payment_status';
+  end if;
+  if new.assigned_staff is distinct from old.assigned_staff then
+    raise exception 'permission denied: cannot change assigned_staff';
+  end if;
+  if new.booking_status is distinct from old.booking_status then
+    raise exception 'permission denied: cannot change booking_status';
+  end if;
+  if new.customer_id is distinct from old.customer_id then
+    raise exception 'permission denied: cannot change customer_id';
   end if;
 
   return new;
@@ -663,15 +738,14 @@ alter table public.booking_assignments enable row level security;
 -- RLS only filters ROWS on an operation a role is otherwise permitted to attempt — Postgres
 -- still enforces baseline table-level GRANTs first, and denies with "permission denied for
 -- table ..." before RLS is ever consulted if that grant is missing. This project's default
--- public-schema privileges don't automatically cover these new tables, so grant explicitly
--- (the policies above/below still do all the real row-level scoping).
+-- public-schema privileges don't automatically cover these new tables, so grant explicitly,
+-- scoped to exactly what each table's policies above/below actually support (least privilege —
+-- no point granting delete/update where there's no policy that will ever allow it through).
 grant select, insert, update, delete on
   public.roles,
   public.permissions,
   public.role_permissions,
   public.user_roles,
-  public.admin_profiles,
-  public.audit_logs,
   public.employees,
   public.staff_attendance,
   public.leave_requests,
@@ -686,6 +760,12 @@ grant select, insert, update, delete on
   public.vehicles,
   public.booking_assignments
 to authenticated;
+
+-- admin_profiles: no delete policy exists (disable instead of deleting) — omit delete.
+grant select, insert, update on public.admin_profiles to authenticated;
+
+-- audit_logs: insert-only + immutable by design — omit update/delete.
+grant select, insert on public.audit_logs to authenticated;
 
 -- set_employee_code()/set_staff_code() call nextval() directly (not SECURITY DEFINER), so the
 -- calling role needs USAGE on these sequences too — identity columns don't need this, explicit
