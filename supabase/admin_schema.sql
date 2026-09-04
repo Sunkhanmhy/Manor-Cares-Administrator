@@ -660,6 +660,38 @@ alter table public.cleaning_team_members enable row level security;
 alter table public.vehicles enable row level security;
 alter table public.booking_assignments enable row level security;
 
+-- RLS only filters ROWS on an operation a role is otherwise permitted to attempt — Postgres
+-- still enforces baseline table-level GRANTs first, and denies with "permission denied for
+-- table ..." before RLS is ever consulted if that grant is missing. This project's default
+-- public-schema privileges don't automatically cover these new tables, so grant explicitly
+-- (the policies above/below still do all the real row-level scoping).
+grant select, insert, update, delete on
+  public.roles,
+  public.permissions,
+  public.role_permissions,
+  public.user_roles,
+  public.admin_profiles,
+  public.audit_logs,
+  public.employees,
+  public.staff_attendance,
+  public.leave_requests,
+  public.marketing_campaigns,
+  public.promotions,
+  public.customer_segments,
+  public.leads,
+  public.quotes,
+  public.technical_tickets,
+  public.cleaning_teams,
+  public.cleaning_team_members,
+  public.vehicles,
+  public.booking_assignments
+to authenticated;
+
+-- set_employee_code()/set_staff_code() call nextval() directly (not SECURITY DEFINER), so the
+-- calling role needs USAGE on these sequences too — identity columns don't need this, explicit
+-- sequences do.
+grant usage on sequence public.employee_code_seq, public.staff_code_seq to authenticated;
+
 -- roles / permissions / role_permissions: readable by any active admin, writable only by super admin
 drop policy if exists roles_select on public.roles;
 create policy roles_select on public.roles for select to authenticated using (private.is_platform_admin());
