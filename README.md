@@ -65,11 +65,13 @@ src/types/database.ts                 # TypeScript types mirroring both schema.s
 
 
 
-3. **Bootstrap the first Super Admin.** Sign up any account through Supabase Auth (e.g. via the
-   Supabase dashboard, or temporarily via `supabase.auth.signUp` in a scratch script), then run the
-   commented-out `do $$ ... $$` block at the bottom of `admin_schema.sql` with that person's email.
-   This is the only manual step — every subsequent admin is created from inside this app by a
-   Super Admin.
+3. **Bootstrap the first Super Admin.** Sign up the `support.manorcares@gmail.com` account through
+   Supabase Auth first (e.g. via the Supabase dashboard, or `supabase.auth.signUp`) — the `do $$ ...
+   $$` block at the bottom of `admin_schema.sql` promotes that profile to Super Admin and is
+   null-safe (it `raise notice`s and skips instead of erroring if the account doesn't exist yet),
+   so it's safe to leave in and re-run any time. If your Super Admin uses a different email,
+   change the address in that block before running it. This is the only manual step — every
+   subsequent admin is created from inside this app by a Super Admin.
 
 ### 3.2 Deploy the Edge Function (admin account creation)
 

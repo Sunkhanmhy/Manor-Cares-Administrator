@@ -875,16 +875,30 @@ begin
 end $$;
 
 
+-- Bootstraps the first Super Admin for support.manorcares@gmail.com if (and only if) that
+-- account already exists in auth.users/profiles. Guarded with a null check so that running
+-- this script BEFORE that account signs up never throws a not-null-constraint error — an
+-- unguarded insert here used to abort this entire script (rolling back every table/policy/seed
+-- above it, since the SQL editor runs a pasted script as one transaction), which is what caused
+-- "Super Admin Auth login error": admin_profiles/user_roles/roles/permissions never actually
+-- got created. Re-run this file any time after the account exists to (re)promote it.
 do $$
 declare
     target_profile_id bigint;
     super_admin_role_id bigint := (select id from public.roles where key = 'super_admin');
 begin
     select id into target_profile_id from public.profiles where email = 'support.manorcares@gmail.com';
-    update public.profiles set role = 'admin' where id = target_profile_id;
-    insert into public.admin_profiles (profile_id, department, job_title, status)
-    values (target_profile_id, 'Executive', 'Super Admin', 'active')
-    on conflict (profile_id) do nothing;
-    insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
-    on conflict do nothing;
+
+    if target_profile_id is null then
+      raise notice 'Super Admin bootstrap skipped: no profile found for support.manorcares@gmail.com yet. Sign up that account via Supabase Auth first, then re-run this script (or this DO block) to promote it.';
+    else
+      update public.profiles set role = 'admin' where id = target_profile_id;
+
+      insert into public.admin_profiles (profile_id, department, job_title, status)
+      values (target_profile_id, 'Executive', 'Super Admin', 'active')
+      on conflict (profile_id) do update set status = 'active';
+
+      insert into public.user_roles (profile_id, role_id) values (target_profile_id, super_admin_role_id)
+      on conflict do nothing;
+    end if;
 end $$;
