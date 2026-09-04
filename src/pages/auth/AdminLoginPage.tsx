@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { setRememberMe } from '../../lib/supabaseClient';
@@ -16,6 +16,13 @@ export function AdminLoginPage() {
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Submitting stays true across the gap between signIn() resolving and the async
+  // admin_profiles/role check in AuthContext finishing — clear it once that check
+  // reports a failure (success instead unmounts this page via the `session` redirect below).
+  useEffect(() => {
+    if (authError) setSubmitting(false);
+  }, [authError]);
 
   if (loading) return <FullPageSpinner label="Verifying session…" />;
   if (session) {
@@ -38,10 +45,14 @@ export function AdminLoginPage() {
     try {
       setRememberMe(remember);
       await signIn(email.trim(), password);
-      navigate('/dashboard', { replace: true });
+      // Don't navigate here: signIn() only resolves once Supabase Auth accepts the
+      // credentials — the admin_profiles/role/permission checks in AuthContext's
+      // onAuthStateChange handler are still resolving asynchronously. Navigating
+      // immediately raced ProtectedRoute (session was still null), bouncing back to
+      // "/". Instead, the `if (session)` check above re-navigates once the admin
+      // session has actually finished loading and been confirmed valid.
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.');
-    } finally {
       setSubmitting(false);
     }
   }
