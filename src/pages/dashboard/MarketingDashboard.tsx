@@ -52,9 +52,9 @@ export function MarketingDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="📣" label="Active Campaigns" value={activeCampaigns} accent="blue" />
-        <StatCard icon="🏷️" label="Active Promotions" value={activePromotions} accent="green" />
-        <StatCard icon="👥" label="Total Customers (reach)" value={totalCustomers} accent="blue" />
+        <StatCard icon="megaphone" label="Active Campaigns" value={activeCampaigns} accent="blue" />
+        <StatCard icon="tag" label="Active Promotions" value={activePromotions} accent="green" />
+        <StatCard icon="users" label="Total Customers (reach)" value={totalCustomers} accent="blue" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

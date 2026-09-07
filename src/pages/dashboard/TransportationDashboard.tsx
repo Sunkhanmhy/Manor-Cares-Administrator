@@ -57,9 +57,9 @@ export function TransportationDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="🚐" label="Active Cleaning Teams" value={teams} accent="blue" />
-        <StatCard icon="🚗" label="Vehicles Available" value={vehiclesAvailable} accent="green" />
-        <StatCard icon="📍" label="Today's Assignments" value={todaysAssignments.length} accent="blue" />
+        <StatCard icon="truck" label="Active Cleaning Teams" value={teams} accent="blue" />
+        <StatCard icon="car" label="Vehicles Available" value={vehiclesAvailable} accent="green" />
+        <StatCard icon="map-pin" label="Today's Assignments" value={todaysAssignments.length} accent="blue" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

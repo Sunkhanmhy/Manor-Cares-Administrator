@@ -63,12 +63,12 @@ export function FinanceDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="💰" label="Total Revenue" value={formatCurrency(totalRevenue)} accent="green" />
-        <StatCard icon="☀️" label="Today's Revenue" value={formatCurrency(todaysRevenue)} accent="green" />
-        <StatCard icon="📆" label="Monthly Revenue" value={formatCurrency(monthlyRevenue)} accent="green" />
-        <StatCard icon="⏳" label="Pending Payments" value={pending} accent="amber" />
-        <StatCard icon="🧾" label="Outstanding Invoices" value={formatCurrency(outstandingInvoices)} accent="amber" />
-        <StatCard icon="↩️" label="Refunds Issued" value={formatCurrency(refunds)} accent="red" />
+        <StatCard icon="dollar" label="Total Revenue" value={formatCurrency(totalRevenue)} accent="green" />
+        <StatCard icon="sun" label="Today's Revenue" value={formatCurrency(todaysRevenue)} accent="green" />
+        <StatCard icon="calendar" label="Monthly Revenue" value={formatCurrency(monthlyRevenue)} accent="green" />
+        <StatCard icon="clock" label="Pending Payments" value={pending} accent="amber" />
+        <StatCard icon="receipt" label="Outstanding Invoices" value={formatCurrency(outstandingInvoices)} accent="amber" />
+        <StatCard icon="refund" label="Refunds Issued" value={formatCurrency(refunds)} accent="red" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

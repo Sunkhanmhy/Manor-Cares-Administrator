@@ -42,9 +42,9 @@ export function FinancePage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div className="stat-grid">
-        <StatCard icon="💰" label="Total Revenue" value={formatCurrency(totalRevenue)} accent="green" />
-        <StatCard icon="🧾" label="Outstanding Balances" value={formatCurrency(outstanding)} accent="amber" />
-        <StatCard icon="↩️" label="Refunds Issued" value={formatCurrency(refunds)} accent="red" />
+        <StatCard icon="dollar" label="Total Revenue" value={formatCurrency(totalRevenue)} accent="green" />
+        <StatCard icon="receipt" label="Outstanding Balances" value={formatCurrency(outstanding)} accent="amber" />
+        <StatCard icon="refund" label="Refunds Issued" value={formatCurrency(refunds)} accent="red" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

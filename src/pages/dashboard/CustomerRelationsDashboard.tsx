@@ -61,10 +61,10 @@ export function CustomerRelationsDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="👥" label="Total Customers" value={totalCustomers} accent="blue" />
-        <StatCard icon="🆕" label="New Customers (month)" value={newCustomers} accent="green" />
-        <StatCard icon="🎧" label="Open Tickets" value={openTickets} accent="amber" />
-        <StatCard icon="⭐" label="Average Review Rating" value={avgRating ? avgRating.toFixed(1) : '—'} accent="green" />
+        <StatCard icon="users" label="Total Customers" value={totalCustomers} accent="blue" />
+        <StatCard icon="user-plus" label="New Customers (month)" value={newCustomers} accent="green" />
+        <StatCard icon="headset" label="Open Tickets" value={openTickets} accent="amber" />
+        <StatCard icon="star" label="Average Review Rating" value={avgRating ? avgRating.toFixed(1) : '—'} accent="green" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

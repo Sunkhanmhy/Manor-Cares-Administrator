@@ -63,23 +63,11 @@ export function AdminLoginPage() {
     <div className="auth-shell" style={{ justifyContent: 'center' }}>
       <div className="auth-col">
         <GlassCard strong style={{ padding: 'clamp(24px, 4vw, 40px)', width: '100%', maxWidth: 480 }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 14,
-              background: 'linear-gradient(135deg, var(--clr-blue), var(--clr-green))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              color: 'var(--clr-white)',
-              marginBottom: 18,
-              fontSize: 15,
-            }}
-          >
-            MC
-          </div>
+          <img
+            src="/logo.jpg"
+            alt="Manor-Cares"
+            style={{ width: 48, height: 48, borderRadius: 14, objectFit: 'cover', marginBottom: 18 }}
+          />
           <h2 style={{ fontSize: 26, marginBottom: 6 }}>Administration Portal</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: 13.5, marginBottom: 20 }}>
             Secure access for authorized management and staff.

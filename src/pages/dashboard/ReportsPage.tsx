@@ -158,17 +158,17 @@ export function ReportsPage() {
           <div>
             <h3 style={{ fontSize: 14, marginBottom: 10, color: 'var(--text-muted)' }}>Customer Reports</h3>
             <div className="stat-grid">
-              <StatCard icon="🆕" label="Customer Growth (period)" value={newCustomers} accent="green" />
-              <StatCard icon="✅" label="Active Customers" value={activeCustomers} accent="blue" />
+              <StatCard icon="user-plus" label="Customer Growth (period)" value={newCustomers} accent="green" />
+              <StatCard icon="check-circle" label="Active Customers" value={activeCustomers} accent="blue" />
             </div>
           </div>
 
           <div>
             <h3 style={{ fontSize: 14, marginBottom: 10, marginTop: 10, color: 'var(--text-muted)' }}>Booking Reports</h3>
             <div className="stat-grid">
-              <StatCard icon="📅" label="Bookings (period)" value={bookingsInPeriod} accent="blue" />
-              <StatCard icon="🏁" label="Completed" value={completedBookings} accent="green" />
-              <StatCard icon="🚫" label="Cancelled" value={cancelledBookings} accent="red" />
+              <StatCard icon="calendar" label="Bookings (period)" value={bookingsInPeriod} accent="blue" />
+              <StatCard icon="flag" label="Completed" value={completedBookings} accent="green" />
+              <StatCard icon="x-circle" label="Cancelled" value={cancelledBookings} accent="red" />
             </div>
             <GlassCard style={{ padding: 20, marginTop: 14 }}>
               <h4 style={{ fontSize: 13, marginBottom: 12 }}>Service Popularity</h4>
@@ -188,25 +188,25 @@ export function ReportsPage() {
           <div>
             <h3 style={{ fontSize: 14, marginBottom: 10, marginTop: 10, color: 'var(--text-muted)' }}>Financial Reports</h3>
             <div className="stat-grid">
-              <StatCard icon="💰" label="Revenue (period)" value={formatCurrency(revenue)} accent="green" />
-              <StatCard icon="🧾" label="Outstanding Balances" value={formatCurrency(outstanding)} accent="amber" />
-              <StatCard icon="↩️" label="Refunds (period)" value={formatCurrency(refunds)} accent="red" />
+              <StatCard icon="dollar" label="Revenue (period)" value={formatCurrency(revenue)} accent="green" />
+              <StatCard icon="receipt" label="Outstanding Balances" value={formatCurrency(outstanding)} accent="amber" />
+              <StatCard icon="refund" label="Refunds (period)" value={formatCurrency(refunds)} accent="red" />
             </div>
           </div>
 
           <div>
             <h3 style={{ fontSize: 14, marginBottom: 10, marginTop: 10, color: 'var(--text-muted)' }}>Staff Reports</h3>
             <div className="stat-grid">
-              <StatCard icon="✅" label="Attendance: Present" value={attendancePresent} accent="green" />
-              <StatCard icon="❌" label="Attendance: Absent" value={attendanceAbsent} accent="red" />
+              <StatCard icon="check-circle" label="Attendance: Present" value={attendancePresent} accent="green" />
+              <StatCard icon="x-circle" label="Attendance: Absent" value={attendanceAbsent} accent="red" />
             </div>
           </div>
 
           <div>
             <h3 style={{ fontSize: 14, marginBottom: 10, marginTop: 10, color: 'var(--text-muted)' }}>Marketing Reports</h3>
             <div className="stat-grid">
-              <StatCard icon="📣" label="Active Campaigns" value={campaignsActive} accent="blue" />
-              <StatCard icon="🆕" label="Customer Acquisition (period)" value={newCustomers} accent="green" />
+              <StatCard icon="megaphone" label="Active Campaigns" value={campaignsActive} accent="blue" />
+              <StatCard icon="user-plus" label="Customer Acquisition (period)" value={newCustomers} accent="green" />
             </div>
           </div>
         </>

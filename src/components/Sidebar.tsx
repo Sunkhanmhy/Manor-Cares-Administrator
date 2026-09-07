@@ -2,35 +2,36 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ROLE_LABELS } from '../lib/permissions';
 import type { PermissionKey } from '../lib/permissions';
+import { Icon, type IconName } from './icons/Icon';
 
 interface NavItem {
   to: string;
   label: string;
-  icon: string;
+  icon: IconName;
   end?: boolean;
   perm?: PermissionKey;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/dashboard', label: 'Dashboard', icon: '📊', end: true },
-  { to: '/dashboard/customers', label: 'Customers', icon: '👥', perm: 'customers.view' },
-  { to: '/dashboard/bookings', label: 'Bookings', icon: '📅', perm: 'bookings.view' },
-  { to: '/dashboard/services', label: 'Cleaning Services', icon: '🧽', perm: 'sales.view' },
-  { to: '/dashboard/transportation', label: 'Cleaning Teams & Transport', icon: '🚐', perm: 'transportation.view' },
-  { to: '/dashboard/hr', label: 'Staff / HR', icon: '🧑\u200d💼', perm: 'staff.view' },
-  { to: '/dashboard/finance', label: 'Finance', icon: '💰', perm: 'finance.view' },
-  { to: '/dashboard/payments', label: 'Payments', icon: '💳', perm: 'finance.view' },
-  { to: '/dashboard/invoices', label: 'Invoices', icon: '🧾', perm: 'finance.view' },
-  { to: '/dashboard/sales', label: 'Sales', icon: '📈', perm: 'sales.view' },
-  { to: '/dashboard/marketing', label: 'Marketing', icon: '📣', perm: 'marketing.view' },
-  { to: '/dashboard/support-hub', label: 'Customer Support', icon: '🎧', perm: 'support.view' },
-  { to: '/dashboard/reviews', label: 'Reviews', icon: '⭐', perm: 'customers.view' },
-  { to: '/dashboard/technical', label: 'Technical Support', icon: '🛠️', perm: 'technical.view' },
-  { to: '/dashboard/reports', label: 'Reports', icon: '📑', perm: 'reports.view' },
-  { to: '/dashboard/notifications', label: 'Notifications', icon: '🔔' },
-  { to: '/dashboard/admins', label: 'Admin Management', icon: '🛡️', perm: 'admins.manage' },
-  { to: '/dashboard/audit-log', label: 'Audit Log', icon: '📜', perm: 'audit.view' },
-  { to: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
+  { to: '/dashboard', label: 'Dashboard', icon: 'dashboard', end: true },
+  { to: '/dashboard/customers', label: 'Customers', icon: 'users', perm: 'customers.view' },
+  { to: '/dashboard/bookings', label: 'Bookings', icon: 'calendar', perm: 'bookings.view' },
+  { to: '/dashboard/services', label: 'Cleaning Services', icon: 'sparkles', perm: 'sales.view' },
+  { to: '/dashboard/transportation', label: 'Cleaning Teams & Transport', icon: 'truck', perm: 'transportation.view' },
+  { to: '/dashboard/hr', label: 'Staff / HR', icon: 'briefcase', perm: 'staff.view' },
+  { to: '/dashboard/finance', label: 'Finance', icon: 'dollar', perm: 'finance.view' },
+  { to: '/dashboard/payments', label: 'Payments', icon: 'card', perm: 'finance.view' },
+  { to: '/dashboard/invoices', label: 'Invoices', icon: 'receipt', perm: 'finance.view' },
+  { to: '/dashboard/sales', label: 'Sales', icon: 'trending-up', perm: 'sales.view' },
+  { to: '/dashboard/marketing', label: 'Marketing', icon: 'megaphone', perm: 'marketing.view' },
+  { to: '/dashboard/support-hub', label: 'Customer Support', icon: 'headset', perm: 'support.view' },
+  { to: '/dashboard/reviews', label: 'Reviews', icon: 'star', perm: 'customers.view' },
+  { to: '/dashboard/technical', label: 'Technical Support', icon: 'wrench', perm: 'technical.view' },
+  { to: '/dashboard/reports', label: 'Reports', icon: 'bar-chart', perm: 'reports.view' },
+  { to: '/dashboard/notifications', label: 'Notifications', icon: 'bell' },
+  { to: '/dashboard/admins', label: 'Admin Management', icon: 'shield', perm: 'admins.manage' },
+  { to: '/dashboard/audit-log', label: 'Audit Log', icon: 'scroll', perm: 'audit.view' },
+  { to: '/dashboard/settings', label: 'Settings', icon: 'settings' },
 ];
 
 export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -50,21 +51,11 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       )}
       <aside className={`glass-strong sidebar ${open ? 'sidebar-open' : ''}`}>
         <div style={{ padding: '24px 20px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 12,
-              background: 'linear-gradient(135deg, var(--clr-blue), var(--clr-green))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              color: 'var(--clr-white)',
-            }}
-          >
-            MC
-          </div>
+          <img
+            src="/logo.jpg"
+            alt="Manor-Cares"
+            style={{ width: 38, height: 38, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+          />
           <div>
             <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--clr-white)' }}>Manor-Cares</div>
             <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>Administration Portal</div>
@@ -84,7 +75,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
               onClick={onClose}
               className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-link-active' : ''}`}
             >
-              <span aria-hidden="true">{item.icon}</span>
+              <Icon name={item.icon} size={18} />
               <span>{item.label}</span>
             </NavLink>
           ))}
@@ -95,8 +86,9 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
             {profile?.first_name} {profile?.last_name}
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 10 }}>{adminProfile?.employee_code}</div>
-          <button className="btn btn-ghost btn-block" onClick={() => signOut()}>
-            🚪 Logout
+          <button className="btn btn-ghost btn-block" onClick={() => signOut()} style={{ gap: 8 }}>
+            <Icon name="logout" size={16} />
+            Logout
           </button>
         </div>
       </aside>

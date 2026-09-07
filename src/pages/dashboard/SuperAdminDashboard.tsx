@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { GlassCard } from '../../components/GlassCard';
 import { StatCard } from '../../components/StatCard';
+import { CTACard } from '../../components/CTACard';
+import { Icon } from '../../components/icons/Icon';
 import { BarChart, DonutChart } from '../../components/Charts';
 import { SkeletonCard } from '../../components/Skeleton';
 import { formatCurrency } from '../../lib/format';
@@ -140,7 +142,7 @@ export function SuperAdminDashboard() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {stats.systemAlerts > 0 && (
         <div className="security-banner" style={{ borderColor: 'rgba(230,160,30,0.4)', background: 'rgba(230,160,30,0.12)' }}>
-          <span aria-hidden="true">⚠️</span>
+          <Icon name="alert-triangle" size={18} aria-hidden="true" />
           <span>
             {stats.systemAlerts} high-priority technical ticket{stats.systemAlerts === 1 ? '' : 's'} need attention.
           </span>
@@ -148,23 +150,78 @@ export function SuperAdminDashboard() {
       )}
 
       <div className="stat-grid">
-        <StatCard icon="👥" label="Total Customers" value={stats.totalCustomers} accent="blue" />
-        <StatCard icon="🆕" label="New Customers (month)" value={stats.newCustomers} accent="green" />
-        <StatCard icon="✅" label="Active Customers" value={stats.activeCustomers} accent="green" />
-        <StatCard icon="📅" label="Total Bookings" value={stats.totalBookings} accent="blue" />
-        <StatCard icon="☀️" label="Today's Bookings" value={stats.todaysBookings} accent="blue" />
-        <StatCard icon="⏭️" label="Upcoming Bookings" value={stats.upcomingBookings} accent="blue" />
-        <StatCard icon="🏁" label="Completed Bookings" value={stats.completedBookings} accent="green" />
-        <StatCard icon="🚫" label="Cancelled Bookings" value={stats.cancelledBookings} accent="red" />
-        <StatCard icon="💰" label="Revenue (successful payments)" value={formatCurrency(stats.revenue)} accent="green" />
-        <StatCard icon="🧾" label="Outstanding Payments" value={formatCurrency(stats.outstandingPayments)} accent="amber" />
-        <StatCard icon="🎧" label="Open Support Tickets" value={stats.openSupportTickets} accent="amber" />
-        <StatCard icon="🧑‍💼" label="Active Staff" value={stats.activeStaff} accent="blue" />
-        <StatCard icon="🚐" label="Cleaning Teams" value={stats.cleaningTeams} accent="blue" />
-        <StatCard icon="🔔" label="System Alerts" value={stats.systemAlerts} accent={stats.systemAlerts > 0 ? 'red' : 'green'} />
+        <StatCard icon="users" label="Total Customers" value={stats.totalCustomers} accent="blue" />
+        <StatCard icon="user-plus" label="New Customers (month)" value={stats.newCustomers} accent="green" />
+        <StatCard icon="check-circle" label="Active Customers" value={stats.activeCustomers} accent="green" />
+        <StatCard icon="calendar" label="Total Bookings" value={stats.totalBookings} accent="blue" />
+        <StatCard icon="sun" label="Today's Bookings" value={stats.todaysBookings} accent="blue" />
+        <StatCard icon="skip-forward" label="Upcoming Bookings" value={stats.upcomingBookings} accent="blue" />
+        <StatCard icon="flag" label="Completed Bookings" value={stats.completedBookings} accent="green" />
+        <StatCard icon="x-circle" label="Cancelled Bookings" value={stats.cancelledBookings} accent="red" />
+        <StatCard icon="dollar" label="Revenue (successful payments)" value={formatCurrency(stats.revenue)} accent="green" />
+        <StatCard icon="receipt" label="Outstanding Payments" value={formatCurrency(stats.outstandingPayments)} accent="amber" />
+        <StatCard icon="headset" label="Open Support Tickets" value={stats.openSupportTickets} accent="amber" />
+        <StatCard icon="briefcase" label="Active Staff" value={stats.activeStaff} accent="blue" />
+        <StatCard icon="truck" label="Cleaning Teams" value={stats.cleaningTeams} accent="blue" />
+        <StatCard icon="bell" label="System Alerts" value={stats.systemAlerts} accent={stats.systemAlerts > 0 ? 'red' : 'green'} />
+      </div>
+
+      <div>
+        <h3 style={{ fontSize: 15, marginBottom: 14 }}>Quick Actions</h3>
+        <div className="cta-grid">
+          <CTACard
+            icon="users"
+            accent="blue"
+            title="Manage Customers"
+            description="View, search and manage every registered customer account."
+            actionLabel="Open Customers"
+            to="/dashboard/customers"
+          />
+          <CTACard
+            icon="calendar"
+            accent="blue"
+            title="Review Bookings"
+            description="Track today's schedule and upcoming cleaning appointments."
+            actionLabel="Open Bookings"
+            to="/dashboard/bookings"
+          />
+          <CTACard
+            icon="dollar"
+            accent="green"
+            title="Finance Overview"
+            description="Check revenue, outstanding invoices and refund activity."
+            actionLabel="Open Finance"
+            to="/dashboard/finance"
+          />
+          <CTACard
+            icon="headset"
+            accent="amber"
+            title="Support Hub"
+            description="Respond to open customer support tickets quickly."
+            actionLabel="Open Support"
+            to="/dashboard/support-hub"
+          />
+          <CTACard
+            icon="briefcase"
+            accent="purple"
+            title="Staff & HR"
+            description="Manage employees, attendance and leave requests."
+            actionLabel="Open HR"
+            to="/dashboard/hr"
+          />
+          <CTACard
+            icon="shield"
+            accent="red"
+            title="Admin Management"
+            description="Create, disable and assign roles to admin accounts."
+            actionLabel="Open Admins"
+            to="/dashboard/admins"
+          />
+        </div>
       </div>
 
       <div className="card-grid">
+
         <GlassCard style={{ padding: 22 }}>
           <h3 style={{ marginBottom: 16, fontSize: 15 }}>Bookings Snapshot</h3>
           <BarChart data={stats.bookingsByStatus} />
