@@ -58,10 +58,10 @@ export function SalesDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="📈" label="Total Leads" value={totalLeads} accent="blue" />
-        <StatCard icon="🆕" label="New Leads (7 days)" value={newLeads} accent="green" />
-        <StatCard icon="🎯" label="Conversion Rate" value={`${conversionRate}%`} accent="green" />
-        <StatCard icon="💼" label="Open Pipeline Value" value={formatCurrency(pipelineValue)} accent="blue" />
+        <StatCard icon="trending-up" label="Total Leads" value={totalLeads} accent="blue" />
+        <StatCard icon="user-plus" label="New Leads (7 days)" value={newLeads} accent="green" />
+        <StatCard icon="target" label="Conversion Rate" value={`${conversionRate}%`} accent="green" />
+        <StatCard icon="briefcase" label="Open Pipeline Value" value={formatCurrency(pipelineValue)} accent="blue" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

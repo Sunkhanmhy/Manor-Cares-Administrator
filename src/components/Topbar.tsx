@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Icon } from './icons/Icon';
 
 export function Topbar({
   title,
@@ -25,7 +26,7 @@ export function Topbar({
         aria-label="Toggle navigation menu"
         style={{ padding: '8px 12px' }}
       >
-        ☰
+        <Icon name="menu" size={18} />
       </button>
       <h1 style={{ fontSize: 18 }}>{title}</h1>
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -35,7 +36,7 @@ export function Topbar({
           aria-label="Notifications"
           style={{ padding: '9px 12px' }}
         >
-          🔔
+          <Icon name="bell" size={18} />
         </button>
         <button
           className={`theme-toggle-3d ${theme === 'light' ? 'is-light' : 'is-dark'}`}

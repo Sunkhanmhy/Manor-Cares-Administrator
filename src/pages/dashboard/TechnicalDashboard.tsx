@@ -57,9 +57,9 @@ export function TechnicalDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="🛠️" label="Open Technical Issues" value={openTickets} accent="amber" />
-        <StatCard icon="🚨" label="High/Urgent Priority" value={urgentTickets} accent="red" />
-        <StatCard icon="✅" label="Resolved (7 days)" value={resolvedThisWeek} accent="green" />
+        <StatCard icon="wrench" label="Open Technical Issues" value={openTickets} accent="amber" />
+        <StatCard icon="alert-triangle" label="High/Urgent Priority" value={urgentTickets} accent="red" />
+        <StatCard icon="check-circle" label="Resolved (7 days)" value={resolvedThisWeek} accent="green" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>

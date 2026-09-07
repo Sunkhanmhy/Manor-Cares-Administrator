@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { GlassCard } from './GlassCard';
+import { IconBadge, type Accent } from './icons/IconBadge';
+import type { IconName } from './icons/Icon';
 
 export function StatCard({
   icon,
@@ -8,37 +10,21 @@ export function StatCard({
   hint,
   accent = 'blue',
 }: {
-  icon: string;
+  icon: IconName;
   label: string;
   value: ReactNode;
   hint?: string;
-  accent?: 'blue' | 'green' | 'amber' | 'red';
+  accent?: Accent;
 }) {
-  const accentColor =
-    accent === 'green' ? 'var(--clr-green)' : accent === 'amber' ? '#ffd88a' : accent === 'red' ? '#ffb4b4' : 'var(--clr-blue)';
-
   return (
     <GlassCard style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 16,
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid var(--glass-border)',
-          }}
-          aria-hidden="true"
-        >
-          {icon}
-        </span>
+        <IconBadge name={icon} accent={accent} shape="circle" size={34} />
         <span style={{ fontSize: 12.5, color: 'var(--text-muted)', fontWeight: 600 }}>{label}</span>
       </div>
-      <div style={{ fontSize: 26, fontWeight: 800, color: accentColor }}>{value}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: accent === 'green' ? 'var(--clr-green)' : accent === 'amber' ? '#ffd88a' : accent === 'red' ? '#ffb4b4' : accent === 'purple' ? 'var(--accent-purple)' : 'var(--clr-blue)' }}>
+        {value}
+      </div>
       {hint && <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{hint}</div>}
     </GlassCard>
   );

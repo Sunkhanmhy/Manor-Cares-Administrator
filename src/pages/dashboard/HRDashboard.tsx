@@ -65,10 +65,10 @@ export function HRDashboard() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div className="stat-grid">
-        <StatCard icon="🧑‍💼" label="Total Employees" value={totalEmployees} accent="blue" />
-        <StatCard icon="✅" label="Active Employees" value={activeEmployees} accent="green" />
-        <StatCard icon="🆕" label="New Employees (month)" value={newEmployees} accent="green" />
-        <StatCard icon="🌴" label="On Leave Today" value={onLeaveToday} accent="amber" />
+        <StatCard icon="briefcase" label="Total Employees" value={totalEmployees} accent="blue" />
+        <StatCard icon="check-circle" label="Active Employees" value={activeEmployees} accent="green" />
+        <StatCard icon="user-plus" label="New Employees (month)" value={newEmployees} accent="green" />
+        <StatCard icon="leaf" label="On Leave Today" value={onLeaveToday} accent="amber" />
       </div>
 
       <GlassCard style={{ padding: 22 }}>
