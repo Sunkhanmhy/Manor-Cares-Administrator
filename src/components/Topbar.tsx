@@ -1,7 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export function Topbar({ title, onMenuClick }: { title: string; onMenuClick: () => void }) {
+export function Topbar({
+  title,
+  onMenuClick,
+  theme,
+  onToggleTheme,
+}: {
+  title: string;
+  onMenuClick: () => void;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
+}) {
   const { profile } = useAuth();
   const navigate = useNavigate();
 
@@ -26,6 +36,17 @@ export function Topbar({ title, onMenuClick }: { title: string; onMenuClick: () 
           style={{ padding: '9px 12px' }}
         >
           🔔
+        </button>
+        <button
+          className={`theme-toggle-3d ${theme === 'light' ? 'is-light' : 'is-dark'}`}
+          onClick={onToggleTheme}
+          type="button"
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          <span className="theme-toggle-track">
+            <span className="theme-toggle-knob">{theme === 'dark' ? '🌙' : '☀️'}</span>
+          </span>
         </button>
         <div
           style={{
