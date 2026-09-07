@@ -20,6 +20,11 @@
   --text: #eef4fb;
   --text-muted: rgba(238, 244, 251, 0.72);
   --text-on-light: #14263b;
+  --clr-deep-black: #050505;
+
+  --icon-size-desktop: 22px;
+  --icon-size-tablet: 20px;
+  --icon-size-mobile: 18px;
 
   color-scheme: dark;
   color: var(--text);
@@ -27,6 +32,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --global-font-size: 15px;
 }
 
 * {
@@ -36,7 +43,10 @@
 body {
   margin: 0;
   min-height: 100dvh;
-  font: 15px/1.5 var(--sans);
+  overflow-x: hidden;
+  font-family: var(--sans);
+  font-size: var(--global-font-size);
+  line-height: 1.5;
   color: var(--text);
   /* A slightly cooler "command-center" gradient vs. the customer app, to feel distinctly administrative. */
   background: radial-gradient(circle at 12% 10%, rgba(21, 101, 192, 0.5), transparent 45%),
@@ -44,6 +54,39 @@ body {
     radial-gradient(circle at 50% 105%, rgba(10, 107, 77, 0.5), transparent 55%),
     linear-gradient(160deg, var(--clr-blue-dark) 0%, #071627 55%, #051212 100%);
   background-attachment: fixed;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --text: #0f1f33;
+  --text-muted: rgba(15, 31, 51, 0.68);
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(17, 54, 89, 0.16);
+  --glass-shadow: 0 12px 30px rgba(10, 28, 52, 0.14);
+}
+
+:root[data-theme='light'] body {
+  color: var(--text);
+  background: radial-gradient(circle at 12% 12%, rgba(21, 101, 192, 0.2), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(18, 163, 117, 0.18), transparent 45%),
+    linear-gradient(160deg, #eaf5ff 0%, #f4fbff 56%, #eef8f3 100%);
+}
+
+@media (max-width: 1200px) {
+  :root { --global-font-size: 14.5px; }
+}
+@media (max-width: 768px) {
+  :root { --global-font-size: 14px; }
+}
+
+/* Responsive 2-column form/layout grid used across dashboard forms */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 640px) {
+  .grid-2 { grid-template-columns: 1fr; }
 }
 
 #root {
@@ -60,6 +103,16 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   color: var(--clr-white);
+}
+
+:root[data-theme='light'] h1,
+:root[data-theme='light'] h2,
+:root[data-theme='light'] h3,
+:root[data-theme='light'] h4,
+:root[data-theme='light'] h5,
+:root[data-theme='light'] h6,
+:root[data-theme='light'] a {
+  color: #0f2f52;
 }
 
 button {
@@ -94,12 +147,13 @@ button {
   gap: 8px;
   border: none;
   border-radius: 12px;
-  padding: 12px 20px;
-  font-size: 15px;
+  padding: 10px 16px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .btn:disabled {
@@ -165,12 +219,12 @@ button {
 .input,
 select.input,
 textarea.input {
-  background: rgba(255, 255, 255, 0.08);
+  background: #000000 !important;
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   padding: 11px 14px;
-  color: var(--text);
-  font-size: 14.5px;
+  color: var(--clr-white);
+  font-size: 0.90625rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
@@ -184,7 +238,12 @@ textarea.input {
 select.input:focus,
 textarea.input:focus {
   border-color: var(--clr-blue);
-  background: rgba(255, 255, 255, 0.12);
+  background: #000000 !important;
+}
+
+select.input option {
+  background: #000000;
+  color: var(--clr-white);
 }
 
 .input-error {
@@ -283,6 +342,7 @@ textarea.input:focus {
   position: sticky;
   top: 0;
   height: 100dvh;
+  background: #000;
 }
 
 .sidebar-section-label {
@@ -343,6 +403,65 @@ textarea.input:focus {
   padding: 14px clamp(16px, 4vw, 36px);
   border-radius: 0;
   border-bottom: 1px solid var(--glass-border);
+  background: #000;
+}
+
+:root[data-theme='light'] .topbar,
+:root[data-theme='light'] .sidebar {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+:root[data-theme='light'] .sidebar-link {
+  color: #223a56;
+}
+
+:root[data-theme='light'] .sidebar-link:hover {
+  background: rgba(21, 101, 192, 0.12);
+  color: #0f2f52;
+}
+
+.theme-toggle-3d {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.theme-toggle-track {
+  width: 64px;
+  height: 34px;
+  border-radius: 999px;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(145deg, #1b2d44, #0f1d2e);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.14), inset 0 -4px 8px rgba(0, 0, 0, 0.35), 0 8px 18px rgba(0, 0, 0, 0.28);
+  transition: background 0.2s ease;
+}
+
+.theme-toggle-3d.is-light .theme-toggle-track {
+  background: linear-gradient(145deg, #cce7ff, #9ecdf5);
+  border-color: rgba(13, 60, 107, 0.2);
+}
+
+.theme-toggle-knob {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  background: linear-gradient(165deg, #f3f7ff, #b7cfff);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transform: translateX(0);
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle-3d.is-light .theme-toggle-knob {
+  transform: translateX(30px);
+  background: linear-gradient(165deg, #fff5b8, #ffd45e);
 }
 
 .hamburger-btn {
@@ -380,10 +499,25 @@ textarea.input:focus {
   gap: 18px;
 }
 
+.dashboard-content .glass,
+.dashboard-content .glass-strong,
+.dashboard-content .table-clean,
+.dashboard-content .input,
+.dashboard-content select.input,
+.dashboard-content textarea.input {
+  background: rgba(0, 0, 0, 0.78) !important;
+}
+
+.dashboard-content .glass,
+.dashboard-content .glass-strong {
+  border: 1px solid var(--glass-border);
+}
+
 .table-clean {
   width: 100%;
   border-collapse: collapse;
   font-size: 13.5px;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .table-clean th {
@@ -396,12 +530,15 @@ textarea.input:focus {
   letter-spacing: 0.04em;
   border-bottom: 1px solid var(--glass-border);
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .table-clean td {
   padding: 12px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .table-clean tr:last-child td {
@@ -414,6 +551,87 @@ textarea.input:focus {
 
 .table-clean tbody tr:hover {
   background: rgba(255, 255, 255, 0.04);
+}
+
+/* Responsive tables: stack each row into a card on narrow screens */
+@media (max-width: 640px) {
+  .table-clean thead {
+    display: none;
+  }
+
+  .table-clean,
+  .table-clean tbody,
+  .table-clean tr {
+    display: block;
+    width: 100%;
+  }
+
+  .table-clean tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-clean tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .table-clean td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .table-clean td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-align: left;
+  }
+
+  .table-clean td:not([data-label])::before {
+    content: none;
+  }
+}
+
+:root[data-theme='light'] .dashboard-content .glass,
+:root[data-theme='light'] .dashboard-content .glass-strong,
+:root[data-theme='light'] .dashboard-content .table-clean,
+:root[data-theme='light'] .dashboard-content .input,
+:root[data-theme='light'] .dashboard-content select.input,
+:root[data-theme='light'] .dashboard-content textarea.input {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #0f1f33;
+}
+
+:root[data-theme='light'] .dashboard-content .input,
+:root[data-theme='light'] .dashboard-content select.input,
+:root[data-theme='light'] .dashboard-content textarea.input {
+  border: 2px solid rgba(13, 60, 107, 0.35);
+}
+
+:root[data-theme='light'] .dashboard-content .input:focus,
+:root[data-theme='light'] .dashboard-content select.input:focus,
+:root[data-theme='light'] .dashboard-content textarea.input:focus {
+  border: 2px solid var(--clr-blue);
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.16);
+}
+
+:root[data-theme='light'] .dashboard-content .table-clean th {
+  border-bottom: 2px solid rgba(13, 60, 107, 0.28);
+}
+
+:root[data-theme='light'] .dashboard-content .table-clean td {
+  border-bottom: 1.5px solid rgba(13, 60, 107, 0.22);
 }
 
 /* ---------------------------------------------------------------- */
