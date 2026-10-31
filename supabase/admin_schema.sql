@@ -1,6 +1,6 @@
 -- =====================================================================
--- Manor Cares — Admin app schema extension
--- Run this AFTER manor-cares-users/supabase/schema.sql, against the SAME
+-- Havelle Agency — Admin app schema extension
+-- Run this AFTER havelle-agency-users/supabase/schema.sql, against the SAME
 -- Supabase project/database (SQL Editor or `supabase db push`).
 -- Safe to re-run: uses IF NOT EXISTS / DO blocks + idempotent policy drops.
 --
@@ -465,7 +465,7 @@ revoke execute on function public.current_admin_is_super_admin() from public, an
 grant execute on function public.current_admin_has_permission(text) to authenticated;
 grant execute on function public.current_admin_is_super_admin() to authenticated;
 
--- Overrides trg_protect_profiles_update (originally defined in manor-cares-users/schema.sql).
+-- Overrides trg_protect_profiles_update (originally defined in havelle-agency-users/schema.sql).
 -- The original raised "unauthenticated" on ANY update where auth.uid() is null — but a direct
 -- SQL editor / service_role / migration session has no PostgREST JWT context at all, so that
 -- unconditionally blocked legitimate bootstrap operations like promote_to_super_admin() below
@@ -541,7 +541,7 @@ begin
 end;
 $$;
 
--- Overrides trg_protect_bookings_update (originally defined in manor-cares-users/schema.sql).
+-- Overrides trg_protect_bookings_update (originally defined in havelle-agency-users/schema.sql).
 -- Same gap as trg_protect_profiles_update above: it only ever recognized profiles.role='admin'
 -- or the booking's own customer, so a department admin with bookings.manage (profiles.role is
 -- always 'staff', never 'admin') was silently blocked from confirming/assigning/rescheduling/
@@ -643,7 +643,7 @@ $$;
 revoke execute on function public.promote_to_super_admin(text) from public, anon, authenticated;
 
 -- =====================================================================
--- Redefine handle_new_user (originally created in manor-cares-users'
+-- Redefine handle_new_user (originally created in havelle-agency-users'
 -- schema.sql) so that accounts created by the Admin Create Account edge
 -- function (raw_user_meta_data.account_type = 'admin') get a profiles +
 -- admin_profiles row instead of a customer_profiles row. Idempotent
@@ -903,7 +903,7 @@ create policy booking_assignments_write on public.booking_assignments for all to
   with check (private.has_permission('transportation.manage') or private.has_permission('bookings.manage'));
 
 -- =====================================================================
--- Tighten shared-table RLS (defined in manor-cares-users/supabase/schema.sql)
+-- Tighten shared-table RLS (defined in havelle-agency-users/supabase/schema.sql)
 -- so admin access is scoped to granular permissions instead of a blanket
 -- "is staff" check. Re-running schema.sql later will NOT undo this because
 -- these are the same policy names — whichever script runs last wins, so
@@ -1093,4 +1093,4 @@ end $$;
 -- above. Safe to re-run any time (before or after the account exists, and after every re-run
 -- of this file). If your Super Admin uses a different email, change it here (or just call
 -- `select public.promote_to_super_admin('you@example.com');` directly in the SQL editor).
-select public.promote_to_super_admin('support.manorcares@gmail.com');
+select public.promote_to_super_admin('support.havelle-agency@gmail.com');

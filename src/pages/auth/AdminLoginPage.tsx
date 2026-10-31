@@ -65,7 +65,7 @@ export function AdminLoginPage() {
         <GlassCard strong style={{ padding: 'clamp(24px, 4vw, 40px)', width: '100%', maxWidth: 480 }}>
           <img
             src="/logo.jpg"
-            alt="Manor-Cares"
+            alt="Havelle Agency"
             style={{ width: 48, height: 48, borderRadius: 14, objectFit: 'cover', marginBottom: 18 }}
           />
           <h2 style={{ fontSize: 26, marginBottom: 6 }}>Administration Portal</h2>
@@ -91,7 +91,7 @@ export function AdminLoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@manor-cares.com"
+                placeholder="you@havelle-agency.com"
                 required
               />
             </div>

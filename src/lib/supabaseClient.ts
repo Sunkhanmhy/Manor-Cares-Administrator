@@ -6,11 +6,11 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undef
 if (!supabaseUrl || !supabaseAnonKey) {
   // Fails loudly in dev instead of silently making broken requests.
   throw new Error(
-    'Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Copy .env.example to .env and use the SAME Supabase project as manor-cares-users.'
+    'Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Copy .env.example to .env and use the SAME Supabase project as havelle-agency-users.'
   );
 }
 
-const REMEMBER_ME_KEY = 'manor_admin_remember_me';
+const REMEMBER_ME_KEY = 'havelle-agency_admin_remember_me';
 
 /** Controls whether the admin session survives closing the browser tab ("Remember session"). */
 export function setRememberMe(remember: boolean) {
@@ -35,7 +35,7 @@ const authStorage = {
 };
 
 // Only the public anon key is ever used on the client — never the service_role key.
-// This is the SAME Supabase project/database as manor-cares-users; the admin app
+// This is the SAME Supabase project/database as havelle-agency-users; the admin app
 // never provisions or connects to a separate database.
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -43,6 +43,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storage: authStorage,
-    storageKey: 'manor-admin-auth',
+    storageKey: 'havelle-agency-admin-auth',
   },
 });

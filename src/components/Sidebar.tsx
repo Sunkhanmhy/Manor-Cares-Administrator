@@ -53,11 +53,11 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
         <div style={{ padding: '24px 20px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
           <img
             src="/logo.jpg"
-            alt="Manor-Cares"
+            alt="Havelle Agency"
             style={{ width: 38, height: 38, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
           />
           <div>
-            <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--clr-white)' }}>Manor-Cares</div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--clr-white)' }}>Havelle Agency</div>
             <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>Administration Portal</div>
           </div>
         </div>

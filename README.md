@@ -1,9 +1,9 @@
-# Manor-Cares — Administration Portal
+# Havelle Agency — Administration Portal
 
 A premium glassmorphism **Super Admin & Staff Administration web application** for the
-Manor-Cares house cleaning services platform. This is an independent frontend project
+Havelle Agency house cleaning services platform. This is an independent frontend project
 (React + TypeScript + Vite) — completely separate from the customer/user app — that connects to
-the **same Supabase project** (Auth + Postgres + REST) as `manor-cares-users`. It does **not**
+the **same Supabase project** (Auth + Postgres + REST) as `havelle-agency-users`. It does **not**
 run its own backend and does **not** create a second database.
 
 ## 1. Tech stack
@@ -14,13 +14,13 @@ run its own backend and does **not** create a second database.
 - One Supabase Edge Function (`admin-create-account`) — the only place the `service_role` key is
   ever used, to create new administrator auth accounts server-side
 - Plain CSS (no UI framework), reusing the exact brand tokens and glassmorphism utility classes
-  from `manor-cares-users/src/index.css`
+  from `havelle-agency-users/src/index.css`
 
 ## 2. Project structure
 
 ```
 supabase/admin_schema.sql             # Roles/permissions/audit log + HR/marketing/sales/technical/
-                                       # transportation tables + RLS. Run AFTER manor-cares-users' schema.sql.
+                                       # transportation tables + RLS. Run AFTER havelle-agency-users' schema.sql.
 supabase/functions/admin-create-account/  # Edge Function: creates new admin accounts (service_role, server-side only)
 src/lib/supabaseClient.ts             # Supabase client (anon key only)
 src/lib/permissions.ts                # Role/permission key constants (mirrors the DB seed data)
@@ -37,9 +37,9 @@ src/types/database.ts                 # TypeScript types mirroring both schema.s
 
 ## 3. Setup
 
-### 3.1 Database (same Supabase project as manor-cares-users)
+### 3.1 Database (same Supabase project as havelle-agency-users)
 
-1. Make sure `manor-cares-users/supabase/schema.sql` has already been run against your Supabase
+1. Make sure `havelle-agency-users/supabase/schema.sql` has already been run against your Supabase
    project.
 2. Open the SQL Editor and run the entire contents of
    [`supabase/admin_schema.sql`](supabase/admin_schema.sql). It is idempotent and safe to re-run,
@@ -59,13 +59,13 @@ src/types/database.ts                 # TypeScript types mirroring both schema.s
    - A redefinition of `handle_new_user()` so admin accounts (created via the Edge Function below)
      get `profiles` + `admin_profiles` rows instead of `customer_profiles` rows.
 
-   > ⚠️ If you ever re-run `manor-cares-users/supabase/schema.sql` afterwards, re-run
+   > ⚠️ If you ever re-run `havelle-agency-users/supabase/schema.sql` afterwards, re-run
    > `admin_schema.sql` again immediately after — it re-applies the tightened policies and the
    > `handle_new_user()` override, since whichever script runs last wins.
 
 
 
-3. **Bootstrap the first Super Admin.** Sign up the `support.manorcares@gmail.com` account through
+3. **Bootstrap the first Super Admin.** Sign up the `support.havelle-agency@gmail.com` account through
    Supabase Auth first (e.g. via the Supabase dashboard, or `supabase.auth.signUp`) — the `do $$ ...
    $$` block at the bottom of `admin_schema.sql` promotes that profile to Super Admin and is
    null-safe (it `raise notice`s and skips instead of erroring if the account doesn't exist yet),
@@ -91,7 +91,7 @@ supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<service role key>   # never put 
 cp .env.example .env
 ```
 
-Use the **exact same** project URL/anon key as `manor-cares-users/.env` — both apps must point at
+Use the **exact same** project URL/anon key as `havelle-agency-users/.env` — both apps must point at
 one Supabase project:
 
 ```

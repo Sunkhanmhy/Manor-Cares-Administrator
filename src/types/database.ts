@@ -17,7 +17,7 @@ export type TicketStatus = 'open' | 'in_progress' | 'waiting_for_customer' | 're
 export type TicketPriority = 'low' | 'normal' | 'high' | 'urgent';
 
 // ---------------------------------------------------------------------
-// Shared tables (owned by manor-cares-users' schema.sql, read/written by
+// Shared tables (owned by havelle-agency-users' schema.sql, read/written by
 // this admin app through permission-scoped RLS policies).
 // ---------------------------------------------------------------------
 
